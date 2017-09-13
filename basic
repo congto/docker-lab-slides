@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Title</title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="./style.css">
+</head>
+<body>
+<textarea id="source">
+  
+  class: title
+
+  # Docker for Developers and System Administrators
+
+  ---
+
+  # Whoami
+
+  Adriano Pezzuto
+
+  Cloud Solution Architect - Milan, Italy
+
+  Background:
+
+    - **NoverIT** (owner and founder)
+
+    - **Cisco** (system engineer)
+
+    - **Siemens** (system engineer)
+  
+  ---
+
+  # NoverIT
+  
+  A technology IT agency providing solutions based on Cloud Computing and emerging digital technologies.
+
+  We provide:
+
+    - Professional Services
+
+    - Consultancy
+
+    - Training programs
+
+    - Value added solutions
+  
+  ---
+
+  # Training objectives
+
+    - Understand Docker and Linux Containers technology
+
+    - Understand the Docker ecosystem
+
+    - Understand containers clustering and orchestration
+
+    - Setup and admin a containers cluster from scratch
+
+    - Deploy modern software applications on Docker
+  
+  ---
+
+  # Methodology
+
+    - Teaching by examples
+
+    - Theoretical and Practical approach
+
+    - Step-by-step Lab Tutorial
+
+    - Learning Checkpoints
+
+    - Final Test
+  
+  ---
+
+  # Prerequisites
+
+    - Linux basic knowledge and practice
+
+    - Computer programming concepts and methodologies
+  
+  ---
+
+  # Attendees background
+
+    - Development
+
+    - Operations
+
+    - SysOps
+
+    - QA Engineer
+
+    - IT Project Manager
+  
+  ---
+
+  # Practice
+
+    - It will take more than merely reading documentation to make you an expert.
+
+    - Instead, let's to practice. This training includes a tons of exercises.
+
+    - If you are attending a workshop or a trainer-led class: follow instructions to access the environment.
+
+    - If you are doing this on your own: use [Play with Docker](http://labs.play-with-docker.com/). It's a complete working envinronment for free.
+
+    - Use the on-line [Docker Lab Tutorials](http://tutorial.docker.noverit.com/) for practice.
+
+  ---
+
+  # Environment
+
+  For a trainer-led class, use the cluster on the Google Cloud Platform. Each attendee will get his/her own cluster made of 3 CentOS virtual machines:
+  
+    1. swarm-userXX-node00
+    2. swarm-userXX-node01
+    3. swarm-userXX-node02
+  
+  To access these nodes from a Linux or Mac machine, login via SSH to the bastion server with the key "gcp.pem" provided by the instructor:
+  
+  ```bash
+  ssh -i gcp.pem userXX@docker.noverit.com
+  ```
+  
+  and then access the machines with the same user
+  
+  ```bash
+  ssh userXX@swarm-userXX-node00
+  ```
+  
+  From a Windows machine, use a terminal like *putty.exe* with the ssh key "gcp.ppk" provided by the instructor and login to the bastion server, then access the machines as above.
+  
+  
+</textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script> var slideshow = remark.create({
+         });
+</script>
+</body>
+</html>

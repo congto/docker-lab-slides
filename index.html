@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Title</title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="./style.css">
+</head>
+<body>
+<textarea id="source">
+  
+  class: title
+  
+  # Docker for Developers and System Administrators
+
+  ---
+
+  # Whoami
+
+  Adriano Pezzuto
+
+  Cloud Solution Architect - Milan, Italy
+
+  Background:
+
+    - **NoverIT** (owner and founder)
+
+    - **Cisco** (system engineer)
+
+    - **Siemens** (system engineer)
+  
+  ---
+
+  # NoverIT
+  
+  A technology IT agency providing solutions based on Cloud Computing and emerging digital technologies.
+
+  We provide:
+
+    - Professional Services
+
+    - Consultancy
+
+    - Training programs
+
+    - Value added solutions
+  
+  ---
+
+  # Training objectives
+
+    - Understand Docker and Linux Containers technology
+
+    - Understand the Docker ecosystem
+
+    - Understand containers clustering and orchestration
+
+    - Setup and admin a containers cluster from scratch
+
+    - Deploy modern software applications on Docker
+  
+  ---
+
+  # Methodology
+
+    - Teaching by examples
+
+    - Theoretical and Practical approach
+
+    - Step-by-step Lab Tutorial
+
+    - Learning Checkpoints
+
+    - Final Test
+  
+  ---
+
+  # Prerequisites
+
+    - Linux basic knowledge and practice
+
+    - Computer programming concepts and methodologies
+  
+  ---
+
+  # Attendees background
+
+    - Development
+
+    - Operations
+
+    - SysOps
+
+    - QA Engineer
+
+    - IT Project Manager
+  
+  ---
+
+  # Practice
+
+    - It will take more than merely reading documentation to make you an expert.
+
+    - Instead, let's to practice. This training includes a tons of exercises.
+
+    - If you are attending a workshop or a trainer-led class: follow instructions to access the environment.
+
+    - If you are doing this on your own: use [Play with Docker](http://labs.play-with-docker.com/). It's a complete working envinronment for free.
+
+    - Use the on-line [Docker Lab Tutorials](http://tutorial.docker.noverit.com/) for practice.
+
+  ---
+
+  # Environment
+
+  For a trainer-led class, use the cluster on the Google Cloud Platform. Each attendee will get his/her own cluster made of 3 CentOS virtual machines:
+  
+    1. swarm-userXX-node00
+    2. swarm-userXX-node01
+    3. swarm-userXX-node02
+  
+  To access these nodes from a Linux or Mac machine, login via SSH to the bastion server with the key "gcp.pem" provided by the instructor:
+  
+  ```bash
+  ssh -i gcp.pem userXX@docker.noverit.com
+  ```
+  
+  and then access the machines with the same user
+  
+  ```bash
+  ssh userXX@swarm-userXX-node00
+  ```
+  
+  From a Windows machine, use a terminal like *putty.exe* with the ssh key "gcp.ppk" provided by the instructor and login to the bastion server, then access the machines as above.
+  
+  ---
+  
+  # Modules
+  
+    1. Containers Basics
+  
+    2. Sorage and Networking
+  
+    3. Clustering
+  
+    4. Applications deployment
+  
+  ---
+  
+  class: title
+  
+  # Module 1
+  
+  Container Basics
+  
+  ---
+  
+  ## Linux Containers
+  
+  - In Linux, a container is a process hiding themself from other processes/containers on the same machine.
+  
+  - Docker uses standard Linux kernel features to do this.
+  
+  - Containers existed in Linux/Unix before anyone cared of them, Docker just made using them easier and mass adoption followed.
+
+  ---
+  
+  ## Containers bricks
+  
+  - **chroot:** a technique in Linux and Unix systems that changes the root directory of a running process and all its children. A program that is running in such environment cannot access files outside the chroot directory tree. This modified environment is called also **jail**.
+  
+  - **cgroups:** a Linux kernel feature that limits and isolates the resource usage like CPU, memory, disk I/O, network, etc. of a collection of processes.
+  
+  - **namespaces:** a technique to allow sandboxing processes from each another, and controlling their resource allocations like network interfaces, user envinronment, mounts, etc.
+  
+  ---
+  
+  ## Containers advantages
+  
+  Running an application within a container offers the following advantages:
+
+  - Images contain only the content needed to run the application. It is much more efficient with containers than with virtual machines which include the whole operating system.
+
+  - Improved performance since it is not running an entirely separate operating system. A container typically runs faster than a virtual machine.
+
+  - Applications running in that container can be isolated and secured from other processes on the host machine.
+   
+  - With the application runtime included in the container, a container is capable of being run in multiple environments without any changes.
+  
+  
+  ---
+  
+  class: picture
+  
+  ## The Docker model
+
+  The Docker Engine is the Linux daemon responsible for management the containers
+
+  ![Docker Model](docker-model.png)
+  
+  The Docker CLI is client command line tool to interact with Docker Engine
+  
+  ---
+  
+  ## Docker Engine
+  
+  If you need to access the Docker engine from a remote client, enable the engine to listen on tcp socket port **2375** for unsecure access and port **2376** for encrypted TLS access.
+  
+  Check the version of Docker engine and client:
+  
+  ```bash
+  docker version
+  ```
+  
+  Get info about the Docker engine: 
+  
+  ```bash
+  docker info
+  ```  
+
+  ---
+  
+  ## Running a container
+
+  Run an application by using the Docker client
+  
+  ```bash
+  docker run busybox:latest echo 'Hello Docker'
+  docker run busybox:latest whoami
+  ```
+  
+  When the client specifies an image, Docker looks first for the image on local host. If the image does not exist locally, then the image is pulled from the public image registry Docker Hub.
+  
+  Run the Busybox container interactively
+  
+  ```bash
+  docker run -it busybox
+  ```
+  
+  ---
+  
+  ## Running a container 1
+  
+  Run a container in daemon mode on a random port
+  
+  ```bash
+  docker run -d httpd
+  ```
+  
+  Run a container in daemon mode on a defined container port
+  
+  ```bash
+  docker run -d -p 5000 httpd
+  ```
+  
+  Run a container in daemon mode and expose the container to a defined host port
+  
+  ```bash
+  docker run -d -p 4000:80 httpd
+  ```
+  
+  ---
+  
+  ## Running a container 3
+  
+  Specify the container name
+  
+  ```bash
+  docker run -d -p 4000:80 --name webserver httpd
+  ```
+  
+  List running containers
+  
+  ```bash
+  docker ps
+  ```
+
+  List all containers
+  
+  ```bash
+  docker ps -a
+  ```
+
+  ---
+  
+  ## Running a container 4
+  
+  By default, a container has no resource constraints and can use cpu, memory, and io as the host’s kernel permits.
+  
+  Control how much host resources a container can use
+  
+  ```bash
+  docker run -d -p 4000:80 --name webserver --memory 400m --cpus 0.5 httpd
+  ```
+  
+  Control a container
+  
+  ```bash
+  docker stop|start|restart webserver
+  ```
+
+  ---
+  
+  ## Running a container 5
+  
+  Remove a stopped container
+  
+  ```bash
+  docker rm webserver
+  ```
+
+  Force remove a running container
+  
+  ```bash
+  docker rm -f webserver
+  ```
+
+  Remove all containers
+  
+  ```bash
+  docker rm `docker ps -aq`
+  ```
+
+  Start a container and remove it when the container exits
+  
+  ```bash
+  docker run --rm -it busybox
+  ```
+
+  ---
+  
+  ## Inspecting a container
+
+  Inspect a container
+  
+  ```bash
+  docker inspect webserver
+  ```
+
+  See logs from a running container
+  
+  ```bash
+  docker logs -f webserver
+  ```
+
+  ---
+  
+  ## Inspecting a container 1
+  
+  Examine the processes running inside a container
+  
+  ```bash
+  docker top webserver
+  ```
+
+  See the ports used by a daemonized container
+ 
+  ```bash
+  docker port webserver
+  ```
+
+  To investigate within a running Docker container attach a bash shell to the container
+  
+  ```bash
+  docker run -d -p 80:80 --name web httpd
+  docker exec -it web /bin/bash  
+  ```
+  ---
+  
+  ## How to run a C program inside a container?
+  
+  ```bash
+  docker pull centos:latest
+  docker run -it centos
+  yum update -y
+  yum install -y gcc
+  vi hello.c
+  int main() {
+    printf("Hello Docker\n");
+  }
+  gcc -w hello.c -o hello
+  ./hello
+  Hello Docker
+  ```  
+
+  ---
+  
+  ## Working with images
+  
+  When the client specifies an image, Docker looks first for the image on local host.
+  
+  If the image does not exist locally, then the image is pulled from the public image registry **Docker Hub**.
+  
+  Search an image from the Docker Hub
+  
+  ```bash
+  docker search mysql
+  ```
+
+  Pull an image from the Docker Hub
+  
+  ```bash
+  docker pull mysql/mysql-server
+  ```
+
+  ---
+  
+  ## Working with images 1
+  
+  List the local images
+  
+  ```bash
+  docker images
+  ```
+
+  Start a container from the local image
+  
+  ```bash
+  docker run -it centos
+  ```
+
+  Remove a locally stored image
+  
+  ```bash
+  docker rmi mysql/mysql-server
+  ```
+
+  ---
+  
+  ## Creating an image from a container
+  
+  Pull the base CentOS image from the Docker Hub
+  
+  ```bash
+  docker pull centos:latest
+  ```
+
+  Start the container in interactive mode and install the Apache Web Server
+  
+  ```bash
+  docker run -it --name centos_with_httpd centos
+  yum update -y; yum install -y httpd; yum clean all
+  systemctl enable httpd
+  echo ServerName apache.example.com >> /etc/httpd/conf/httpd.conf
+  echo Hello Docker > /var/www/html/index.html
+  exit
+  ```
+
+  ---
+  
+  ## Creating an image from a container 1
+  
+  Commit the changes to a new local image
+  
+  ```bash
+  docker commit -m "CentOS base image with Apache Web Server installed" centos_with_httpd myhttpd
+  ```
+
+  Run a container from the new image just created
+  
+  ```bash
+  docker run -d -p 80:80 --name myweb myhttpd /usr/sbin/httpd -DFOREGROUND
+  ```
+
+  Attach a bash to the running container and check the running processes
+  
+  ```bash
+  docker exec -it myweb /bin/bash
+  ps -ef
+  ```
+
+  ---
+  
+  ## Creating an image from a container 2
+  
+  Now that you see the new image is working, let's to make it of public domain by pushing the image on the Docker Hub.
+  
+  This step assume you already have an account on the Docker Hub.
+
+  Tag the new image with the namespace associated with your account
+  
+  ```bash
+  docker tag myhttpd kalise/myhttpd:latest
+  ```
+
+  Login to the Docker Hub and push the image
+  
+  ```bash
+  docker login
+  docker push kalise/myhttpd:latest
+  ```
+
+  ---
+  
+  ## Creating an image from a Docker file
+  
+  Building container images from Dockerfile files is the preferred way to create Docker well formatted containers.
+  
+  The procedure here involves creating a Dockerfile file to build our own Apache Web Server image based on CentOS base image:
+
+  1. Choosing a base image
+  2. Install the packages needed for an Apache Web server
+  3. Map the server port to a specied port on the host
+  4. Launch the Web server
+
+
+  ---
+  
+  ## Creating an image from a Docker file 1
+  
+  The Dockerfile for our Apache web server will be like this
+  
+  ```bash
+  # My HTTP Docker image
+  # Version 1
+  # Pull the CentOS 7.2 image from the Docker Hub registry
+  FROM centos:7
+  MAINTAINER Tom Cat
+  USER root
+  # Update packages list and install some useful tools
+  RUN yum update -y
+  # Add the httpd package
+  RUN yum install -y httpd
+  # Clean the yum cache
+  RUN yum clean all
+  # Set the Web Server name
+  RUN echo ServerName apache.example.com >> /etc/httpd/conf/httpd.conf
+  # Create an index.html file
+  RUN echo Your Web server is successful > /var/www/html/index.html
+  ```
+
+  ---
+  
+  ## Build the image
+  
+  Build the image from the Dockerfile file
+  
+  ```bash
+  docker build -t myapache:centos .
+  ```
+
+  Check the new image has been created
+  
+  ```bash
+  docker images
+  ```
+
+  Tag the image
+  
+  ```bash
+  docker tag myapache:centos kalise/myapache:latest
+  ```
+
+  The image just created can be pushed on the Docker Hub or it can be saved to a tarball
+  
+  ```bash
+  docker save -o myapache.tar kalise/myapache:latest
+  ```
+  
+  ---
+
+  ## A better example ...
+  
+  ```bash
+  # My HTTP Docker image: version 1.3
+  # Pull the CentOS 7.2 image from the Docker Hub registry
+  FROM centos:7
+  MAINTAINER Tom Cat tom.cat@warnerbros.com
+  LABEL Version 1.3
+  USER root
+  EXPOSE 80
+  # Update packages list and install the httpd package
+  RUN yum update -y && yum install -y httpd && yum clean all
+  # Set the Web Server name
+  RUN echo ServerName apache.example.com >> /etc/httpd/conf/httpd.conf
+  # Overwrite the default index.html page
+  COPY index.html /var/www/html/index.html
+  # Start the Apache web server application at runtime
+  CMD ["/usr/sbin/apachectl", "-DFOREGROUND"]
+  ```
+
+  ---
+  
+  ## General guidelines
+
+    1. Avoid installing unnecessary packages
+    2. Run only one process per container
+    3. Minimize the number of layers
+
+  ---
+  
+  ## Build a C Application
+  
+  Create your C program
+  
+  ```c
+      int main() {
+        printf("Hello Docker\n");
+      }
+  ```
+
+  Create a Dockerfile (do not make it in real world!)
+  
+  ```bash
+    # A simple C application
+    # Pull a GCC image from the Docker Hub registry
+    FROM gcc:latest
+    MAINTAINER Tom Cat tom.cat@warnerbros.com
+    LABEL Version 1.0
+    USER root
+    COPY ./hello.c /usr/src/hello.c
+    WORKDIR /usr/src
+    # Compile the C application
+    RUN gcc -w hello.c -o hello
+    # Start the C application at runtime
+    CMD ["./hello"]
+  ```
+
+
+  ---
+  
+  ## Build a Java Application
+  
+  Create your Java program
+  
+  ```java
+    mkdir myjapp
+    cd myjapp
+    vi hello.java
+    class hello {
+      public static void main(String []args) {
+      System.out.println("Hello Java");
+      }
+    }
+  ```
+  ---
+  
+  ## Build a Java Application 1
+  
+  Create a Dockerfile like the following
+ 
+  ```bash
+    # A simple JAVA application
+    # Pull a JAVA image from the Docker Hub registry
+    FROM java:latest
+    MAINTAINER Tom Cat tom.cat@warnerbros.com
+    LABEL Version 1.0
+    USER root
+    COPY ./hello.java /usr/src/hello.java
+    WORKDIR /usr/src
+    # Compile the JAVA application
+    RUN javac hello.java 
+    # Start the JAVA application at runtime
+    CMD  ["java", "hello"]
+  ```
+
+  ---
+  
+  ## Build an application server based on Tomcat
+  
+  Code is [here](https://github.com/kalise/tomcat-as-a-service)
+
+  ---
+  
+  ## Build a node.js application
+  
+  Code is [here](https://github.com/kalise/nodejs-web-app)
+  
+  ---
+  
+  ## Build a python application
+  
+  Code is [here](https://github.com/kalise/flask-vote-app)
+  
+  
+  ---
+  
+  class: title
+  
+  # Module 2
+  
+  Storage and Networking
+  
+  ---
+  
+  ## Container Storage
+  
+  Docker separates storage requirements into three categories:
+
+   - **Layered Filesystem** for running containers
+   - **Persistent Volumes** for application persistent data
+   - **Registry** for image storage
+
+  ---
+  
+  ## Layered Filesystem
+  
+  Docker adopted a layered storage architecture for the images and containers. A layered file system is made of many separate layers instead of creating a large, monolithic file image.
+  
+  Currently, supported layered file systems are:
+  
+   - device mapper
+   - btrfs
+   - aufs
+   - overlay
+
+  ---
+  
+  class: picture
+  
+  ## Layered Filesystem 1
+  
+  ![Layered Filesystem](container-layers.jpg)
+  
+  ---
+  
+  ## Layered Filesystem 2
+  
+  To check the storage layered file system, inspect the docker engine
+  ```bash
+  docker system info | grep -i "Storage Driver"
+  ```
+
+  ---
+  
+  ## Copy on Write
+  
+  Docker uses the capabilities of the layered file system to add a read write working directory on top of existing read only layers.
+  
+  When a container starts, an empty read write layer is added on top of the read only layers. The read-write layer is empty until changes are made by the running container process.
+  
+  When a process running in the container attempts to create a new file or update an existing one, the filesystem creates a copy of the new file on the upper read-write layer.
+  
+  ---
+  
+  ## Copy on Write 1
+  
+  Pull an ubuntu image from the Docker Hub
+  
+  ```bash
+  docker pull ubuntu:latest
+  ```
+
+  Image layers are placed in the local host storage area 
+  
+  ```bash
+  ls -l /var/lib/docker/overlay/
+  ```
+
+  Start the container and make some changes
+  
+  ```bash
+  docker run --name ubuntu -it ubuntu:latest
+  useradd adriano
+  passwd adriano
+  ```
+  
+  These changes are stored in the read write layer but they are not persistent
+  
+  ---
+  
+  ## Create a new layer from a running container
+  
+  Commit changes made on a running container
+  
+  ```bash
+  docker commit -m "added a new user" ubuntu ubuntu:latest
+  docker images
+  docker history ubuntu:latest
+  ```
+
+  ---
+
+  ## Persistent Volumes
+  
+  - Data created in the container file system are not persistent
+  
+  - Applications require persistent storage for using, capturing, or saving data beyond the container life cycle.
+  
+  - Utilizing persistent volume storage is a way to keep data persistence.
+  
+  - As best practice, it is high recommended to isolate the data nedd persistence.
+
+  - Persistent storage is an important use case, especially for things like databases.
+  
+  ---
+  
+  ## Persistent Volumes 1
+  
+  To achieve this goal, there are two different approaches:
+
+  1. **host based volumes**: reside on the same host where container is running
+  2. **shared volumes**: reside on a shared filesystem like NFS, GlusterFS or others
+
+  In the first case, data are persistent to the host, meaning if the container is moved to an another host, the content of the volume is no more accessible from the new container.
+  
+  In the second case, the volume can be mounted by any container, no matter the host is running the container. It provides data persistence across a cluster of hosts. 
+
+  ---
+  
+  ## Persistent Volumes 2
+  
+  Persistent volumes are mapped from volumes defined into Dockerfile to filesystem on the host running the container.
+
+  Start a container from the nodejs image creating the volume
+  
+  ```bash
+  docker run --name=nodejs \
+     -p 80:8080 -d \
+     -e MESSAGE="Hello" \
+  kalise/nodejs-web-app:latest
+  ```
+
+  All persistent volumes are created under /var/lib/docker/volumes directory.
+  
+  Inspect the container to check the volumes used by
+  
+  ```bash
+  docker inspect nodejs
+  ```
+
+  ---
+  
+  ## Persistent Volumes 3
+  
+  A volume persist even if the container itself is deleted.
+ 
+  ```bash
+  docker rm -f nodejs
+  ls -l /var/lib/docker/volumes/84894a09fe25f503cd0f2d3a30eaa00a08d72190a92e2568d395cea5a277c456/
+  ```
+
+  To manually delete a volume, find the volume and remove it
+ 
+  ```bash
+  docker volume list
+  docker volume remove 84894a09fe25f503cd0f2d3a30eaa00a08d72190a92e2568d395cea5a277c456
+  ```
+
+  ---
+  
+  ## Persistent Volumes 4
+  
+  Persistent volumes can be created before the container and then attached to the container
+
+  ```bash
+  docker volume create --name pippo
+  docker volume inspect pippo
+  docker run --name=nodejs \
+       -p 80:8080 -d \
+       -e MESSAGE="Hello" \
+       -v pippo:/var/log \
+       kalise/nodejs-web-app:latest
+  docker inspect nodejs
+  ```    
+
+  ---
+
+  ## Persistent Volumes 5
+  
+  Persistent volumes can be mounted on any directory of the host file system.
+ 
+  ```bash
+  docker run --name=nodejs \
+    -p 80:8080 -d \
+    -e MESSAGE="Hello" \
+    -v /logs:/var/log \
+  kalise/nodejs-web-app:latest
+  ```
+  
+  Volume data now are placed on the /logs host directory. This helps sharing data between containers and host itself.
+
+  ---
+  
+  ## Persistent Volumes 6
+  
+  The same volume could be mounted by another container, for example performing some analytics on the logs produced by the nodejs application.
+  
+  However, multiple containers writing to a single shared volume can cause data corruption. Make sure the application is designed to write to shared data stores.
+
+  ---
+
+  ## Registry
+
+  A Docker registry service is a storage and content delivery system containing tagged images.
+  
+  Main registry service is the official Docker Hub but users can build their own registry.
+  
+  Users interact with a registry by using push and pull commands.
+
+  ---
+  
+  ## Registry 1
+  
+  In a typical deployment workflow, a commit to source code would trigger a build on Continous Integration system, which would then push a new image to the registry service.
+  
+  A notification from the registry triggers a deployment on a Docker staging environment, or notify other systems that a new image is available.
+  
+  If the new image is fine, then a notification is sent to the production environment for deployng the new image 
+
+  ---
+  ## Deploy a local Registry Service
+  
+  Users the do not want to use a public registry for their images can deploy a local registry service on their own machines.
+  
+  Example instructions for installing a private registry are provided [here](http://tutorial.docker.noverit.com/content/storage.html#registry).
+  
+  ---
+  
+  ## Docker networking
+
+  - Docker networking features provide complete isolation for containers.
+  
+  - Each container will get its own private IP address
+  
+  - Containers can talk each other via their IP addresses
+  
+  - Containers can reach any destination the host machine is able to reach
+  
+  ---
+  
+  ## Default networks
+
+  Installing the Docker Engine, there are three default networks on the host machine
+
+  ```bash
+  docker network list
+  NETWORK ID          NAME                DRIVER
+  34a43cf4f024        bridge              bridge
+  83af822c1610        host                host
+  02c1fcf12795        none                null
+  ```
+
+  ---
+  
+  ## Default networks 1
+  
+  The bridge network represents the docker0 network present in all Docker installations as part of a host network stack
+
+  ```bash
+  ifconfig
+  ```
+  
+  The docker0 interface belongs to a Linux bridge network created by docker at daemon start time.
+  
+  ```bash
+  brctl show 
+  bridge name     bridge id               STP enabled     interfaces
+  docker0         8000.024267786b35       no
+  ```
+
+  ---
+  
+  ## Default networks 2
+  
+  - All the docker containers will be connected to the docker0 bridge by default via a virtual Ethernet interface.
+  
+  - The containers connnected to the docker0 bridge use the iptables NAT rules created by docker to communicate with the outside world.
+  
+  - The IP addresses space of the bridge network is 172.17.0.0/16 by default.
+
+  ---
+
+  ## Default networks 3
+  
+  Create a container and check the host is creating a new virtual Ethernet interface:
+
+  ```bash
+  docker run -d -p 80:80 --name webserver kalise/httpd
+  ifconfig
+  brctl show
+  ```
+
+  Connect to the container just created to inspect its own network stack
+
+  ```bash
+  docker exec -it webserver /bin/bash
+  yum install net-tools -y
+  ifconfig
+  exit
+  ```
+
+  ---
+   
+  ## Default networks 4
+  
+  - Running a container, automatically adds the new containers to bridge network.
+  
+  - Containers in this default network are able to communicate with each other using docker0 bridge IP addresses.
+  
+  - For legacy reasons, Docker does not support automatic service discovery on the default bridge network.
+
+  ---
+  
+  class: picture
+  
+  ## Docker network model
+  
+  This is how docker builds containers network
+  
+  ![Docker Network](docker-net.png)
+
+  ---
+  
+
+  ## Network Address Translation
+  
+  - The iptables is the native packet filtering system that has been a part of the Linux kernel.
+  
+  - It's a L3/L4 firewall that provides rule chains for packet marking, masquerading, and dropping.
+  
+  - The built-in Docker network drivers utilize iptables extensively to segment network traffic, provide host port mapping, and to mark traffic for load balancing decisions.
+
+  ---
+  
+  ## The bridge network
+  
+  Inspect the bridge network
+
+  ```bash
+  docker network inspect bridge
+  ```
+
+  Bridge network is the default common option for Docker container.
+  
+  ---
+  
+  ## The bridge network 1
+  
+  Some other options are:
+
+  1. host mode
+  2. container mode
+  3. none mode
+
+  In the host mode, the container shares the networking namespace of the host
+
+  ```bash 
+  docker run -d -p 80 --net=host --name webserver httpd
+  ```
+
+  Inspect the host network
+  ```bash
+  docker network inspect host
+  ```
+
+  ---
+  
+  ## The bridge network 2
+  
+  In the container mode, a container is forced to reuse the networking namespace of another container
+  
+  ```bash
+  docker run -d -p 80:80 --name=web httpd
+  docker run -it --net=container:web --name=shell busybox
+  ```
+
+  The none mode does not configure networking
+
+  ```bash
+  docker run --net=none -itd --name=centos-none centos
+  ```
+
+  ---
+  
+  ## User defined bridge networks
+
+  - Docker permits to create user defined networks that better isolate containers.
+  
+  - It is possible to create multiple networks and add containers to more than one network.
+  
+  - Containers can only communicate within networks but not across networks.
+  
+  - A container attached to two networks can communicate with member containers in either network.
+  
+  - When a container is connected to multiple networks, its external connectivity is provided via the first network.
+
+  ---
+  
+  class: picture
+  
+  ## Multiple Networks
+  
+  ![Multiple Networks](docker-multiple-networks.jpg)
+
+  ---
+  
+  ## Custom bridge networks
+  
+  Create a custom bridge network
+
+  ```bash
+  docker network create --subnet=192.168.1.0/24 --gateway=192.168.1.1 bridge1
+  docker network list
+  ```
+
+  A new interface is added to the host network stack
+
+  ```bash
+  ifconfig
+  brctl show
+  ```
+
+  ---
+  
+  ## Custom bridge networks 1
+  
+  It is possible to force the name of the interface to be the same of the network label
+
+  ```bash
+  docker network create \
+    --subnet=192.168.2.0/24 \
+    --gateway=192.168.2.1 \
+    --opt="com.docker.network.bridge.name=bridge2" \
+    bridge2
+  ```
+  
+  Inspect the networks just created
+  
+  ```bash
+  docker network inspect bridge2
+  ```
+
+  Start a container on this network
+
+  ```bash
+  docker run -d -p 80:80 --net=bridge2 --name apache kalise/httpd
+  docker network inspect bridge2
+  ```
+  
+  ---
+  
+  ## Custom bridge networks 2
+  
+  A running container can be attached to a custom network
+
+  ```bash
+  docker network connect bridge1 apache
+  ```
+  
+  remove the network
+
+  ```bash
+  docker network rm bridge2
+  Error response from daemon: network bridge2 has active endpoints
+  docker rm -f apache
+  docker network rm bridge2
+  ```
+
+  ---
+  
+  ## Using custom networks
+  
+  - Docker networking permits to build network infrastructures for real use cases.
+  
+  - Useful for multi-tier applications like a WorPress blog platform made of a MariaDB database and an Apache/PHP server.
+  
+  - The Apache/PHP application is listening for incoming connections from the host on standard port 80. It uses an internal user-defined network to comunicate with the MariaDB server listening on standard port 3306.
+  
+  - The MariaDB server is attached on the internal network and does not expose any port to the host.
+
+  ---
+  
+  ## Using custom networks 1
+  
+  Create an internal network
+
+  ```bash
+  docker network create --subnet=192.168.1.0/24 --gateway=192.168.1.1 internal
+  ```
+
+  and start a MariaDB database server on this network
+
+  ```bash
+  docker run -d --name mariadb --net internal bitnami/mariadb:latest
+  ```
+
+  Start a WordPress application on the internal network and expose the port 80 to the host
+
+  ```bash
+  docker run -d --name wordpress -p 80:80 bitnami/wordpress:latest
+  ```
+
+  ---
+  
+  ## Inter Containers Communication
+  
+  - By default, Docker has inter-container communication enabled by the option enable_icc=true meaning that containers on a host are free to communicate without restrictions.
+  
+  - Communication to the outside world is controlled via iptables and ip_forwarding.
+
+  - For security reasons, it is possible to disable the inter-container communication by setting the option to enable_icc=false in the user defined networks.
+  
+  ---
+  
+  ## Inter Containers Communication 1
+  
+  Create an internal network with inter-container communication disabled
+  
+  ```bash
+  docker network create \
+   --subnet=192.168.2.0/24 \
+   --gateway=192.168.2.1 \
+   --opt="com.docker.network.bridge.enable_icc=false" internal
+
+  docker network inspect internal | grep icc
+              "com.docker.network.bridge.enable_icc": "false"
+  ```
+
+  ---
+  
+  ## Inter Containers Communication 2
+  
+  Create two container on that network and check that they cannot reach each other
+
+  ```bash
+  docker run -itd --name=centos1 --net=internal --ip=192.168.2.11 centos
+  docker run -itd --name=centos2 --net=internal --ip=192.168.2.12 centos
+
+  docker exec -it centos1 bash
+  ping 192.168.2.12
+  --- 192.168.2.12 ping statistics ---
+  ...
+  568 packets transmitted, 0 received, 100% packet loss, time 567000ms
+  exit
+  ```
+
+  ---
+  
+  ## Embedded DNS Service
+  
+  - The docker daemon implements an embedded DNS server on custom networks which provides built-in service discovery
+  
+  - The container name is used to discover containers. The embedded DNS server maintains the mapping between the container name and its IP address on the network the container is connected to.
+  
+  - The embedded DNS is not available on the default bridge network for backward compatibility with legacy Docker versions.
+  
+  ---
+  
+  ## Embedded DNS Service 1
+  
+  Create a couple of containers on the default bridge network
+
+  ```bash
+  docker run --net=bridge -itd --name=centos_one centos
+  docker run --net=bridge -itd --name=centos_two centos
+  ```
+
+  Create an internal network with inter container communication enabled
+  
+  ```bash
+  docker network create --subnet=192.168.100.0/24 --gateway=192.168.100.1 internal
+  ```
+  
+  Create another two containers on the internal network
+
+  ```bash
+  docker run --net=internal -itd --name=centos_three centos
+  docker run --net=internal -itd --name=centos_four centos
+  ```
+
+  ---
+  
+  ## Embedded DNS Service 2
+  
+  Attach to the centos_three container and check the reachability of the other container on the same network
+
+  ```bash
+  docker attach centos_three
+  ping centos_four
+  PING centos_three (192.168.100.3) 56(84) bytes of data.
+  64 bytes from centos_four.internal (192.168.100.3): icmp_seq=1 ttl=64 time=1.17 ms
+  ^C
+  ```
+  
+  They can reach each other by their names. This is because the embedded DNS is working on the internal network. 
+  
+  ---
+  
+  ## Embedded DNS Service 3
+  
+  Attach to the centos_one container and check the reachability of the other container on the same network
+  
+  ```bash
+  docker attach centos_one
+  ping centos_two
+  ^C
+
+  ping 172.17.0.4
+  PING 172.17.0.4 (172.17.0.4) 56(84) bytes of data.
+  64 bytes from 172.17.0.4: icmp_seq=1 ttl=64 time=0.120 ms
+  ```
+  
+  Containers on the default bridge network can only reach by their internal IP address. This is because the embedded DNS is not active on the default network.
+  
+  ---
+  
+  ## Embedded DNS Service 4
+  
+  Check the /etc/resolv.conf file on one of the containers attached to default network
+
+  ```bash
+  docker attach centos_one
+  cat /etc/resolv.conf
+  Generated by NetworkManager
+  nameserver 8.8.8.8
+  ```
+
+  Check on one of the second group of container attached on the internal network
+
+  ```bash
+  docker attach centos_two
+  cat /etc/resolv.conf
+  nameserver 127.0.0.11
+  options ndots:0
+  ```
+
+  ---
+  
+  
+  class: title
+  
+  # Module 3
+  
+  Clustering
+  
+  
+  
+  ---
+  
+  
+  class: title
+  
+  # Module 4
+  
+  Applications deployment
+  
+
+  
+  
+
+  
+</textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script> var slideshow = remark.create({
+             ratio: '16:9',
+             highlightSpans: true,
+         });
+</script>
+</body>
+</html>
