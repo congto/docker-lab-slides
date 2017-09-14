@@ -1173,15 +1173,25 @@
   and start a MariaDB database server on this network
 
   ```bash
-  docker run -d --name mariadb --net internal bitnami/mariadb:latest
+  docker run --name mariadb -d  --net internal \
+           -e MARIADB_ROOT_PASSWORD="bitnami123" \
+           -e MARIADB_DATABASE="wordpress" \
+           -e MARIADB_USER="bitnami" \
+           -e MARIADB_PASSWORD="bitnami123" \
+           bitnami/mariadb:latest
   ```
 
-  Start a WordPress application on the internal network and expose the port 80 to the host
+  Start a WordPress application on the external network and expose the port 80 to the host
 
   ```bash
-  docker run -d --name wordpress -p 80:80 bitnami/wordpress:latest
+  docker run --name wordpress -d -p 80:80 \
+           -e WORDPRESS_DATABASE_NAME="wordpress" \
+           -e WORDPRESS_DATABASE_USER="bitnami" \
+           -e WORDPRESS_DATABASE_PASSWORD="bitnami123" \
+           bitnami/wordpress:latest
   ```
 
+  Then attach the wordpress container to the internal network in order to communicate with mariadb
   ---
   
   ## Inter Containers Communication
