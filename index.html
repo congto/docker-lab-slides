@@ -807,6 +807,7 @@
   docker run --name=nodejs \
      -p 80:8080 -d \
      -e MESSAGE="Hello" \
+     -v /mnt:/var/log \
   kalise/nodejs-web-app:latest
   ```
 
