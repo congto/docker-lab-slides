@@ -801,24 +801,25 @@
   
   Persistent volumes are mapped from volumes defined into Dockerfile to filesystem on the host running the container.
 
-  Start a container from the nodejs image creating the volume
+  Start a container from the nodejs image
   
   ```bash
   docker run --name=nodejs \
      -p 80:8080 -d \
      -e MESSAGE="Hello" \
-     -v /mnt:/var/log \
   kalise/nodejs-web-app:latest
   ```
 
-  All persistent volumes are created under /var/lib/docker/volumes directory.
+  This will create a volume as in the Dockerfile the /var/log dir has been declared as volume.
   
   Inspect the container to check the volumes used by
   
   ```bash
   docker inspect nodejs
   ```
-
+  
+  All persistent volumes are created under /var/lib/docker/volumes directory.
+  
   ---
   
   ## Persistent Volumes 3
