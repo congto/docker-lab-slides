@@ -810,7 +810,7 @@
   kalise/nodejs-web-app:latest
   ```
 
-  This will create a volume as in the Dockerfile the /var/log dir has been declared as volume.
+  This will create a volume for /var/log dir since this dir has been declared as volume in the Dockerfile.
   
   Inspect the container to check the volumes used by
   
@@ -845,12 +845,12 @@
   Persistent volumes can be created before the container and then attached to the container
 
   ```bash
-  docker volume create --name pippo
-  docker volume inspect pippo
+  docker volume create --name myvolume
+  docker volume inspect myvolume
   docker run --name=nodejs \
        -p 80:8080 -d \
        -e MESSAGE="Hello" \
-       -v pippo:/var/log \
+       -v myvolume:/var/log \
        kalise/nodejs-web-app:latest
   docker inspect nodejs
   ```    
