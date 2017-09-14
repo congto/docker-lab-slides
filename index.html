@@ -1192,6 +1192,11 @@
   ```
 
   Then attach the wordpress container to the internal network in order to communicate with mariadb
+  
+  ```bash
+  docker network connect internal wordpress
+  ```
+  
   ---
   
   ## Inter Containers Communication
