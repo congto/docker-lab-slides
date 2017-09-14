@@ -1164,15 +1164,10 @@
   
   ## Using custom networks 1
   
-  Create an internal network
+  Create an internal network and start a MariaDB database server on this network
 
   ```bash
   docker network create --subnet=192.168.1.0/24 --gateway=192.168.1.1 internal
-  ```
-
-  and start a MariaDB database server on this network
-
-  ```bash
   docker run --name mariadb -d  --net internal \
            -e MARIADB_ROOT_PASSWORD="bitnami123" \
            -e MARIADB_DATABASE="wordpress" \
